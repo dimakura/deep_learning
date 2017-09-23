@@ -46,9 +46,25 @@ delete_instance() {
   local status=$(instance_status $instance_name)
   if [ -z $status ]; then
     echo "Instance doesn't exists $instance_name"
+    exit 1
   else
     echo "Deleting instance $instance_name..."
     gcloud compute instances delete $instance_name --delete-disks all
+  fi
+}
+
+ssh_instance() {
+  local instance_name=$1
+  local status=$(instance_status $instance_name)
+  if [ -z $status ]; then
+    echo "Instance doesn't exists $instance_name"
+    exit 1
+  elif [ $status != 'RUNNING' ]; then
+    echo "Instance $instance_name isn't running but $status"
+    exit 1
+  else
+    echo "Accessing $instance_name..."
+    gcloud compute ssh $instance_name
   fi
 }
 
@@ -56,10 +72,6 @@ delete_instance() {
 
 cpu_instance_status() {
   instance_status $CPU_INSTANCE_NAME
-}
-
-gpu_instance_status() {
-  instance_status $GPU_INSTANCE_NAME
 }
 
 create_cpu_instance() {
@@ -100,4 +112,14 @@ stop_cpu_instance() {
 
 delete_cpu_instance() {
   delete_instance $CPU_INSTANCE_NAME
+}
+
+ssh_cpu_instance() {
+  ssh_instance $CPU_INSTANCE_NAME
+}
+
+# GPU instance functions
+
+gpu_instance_status() {
+  instance_status $GPU_INSTANCE_NAME
 }
