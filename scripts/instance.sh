@@ -1,8 +1,4 @@
 #!/bin/sh
-
-source ./scripts/config.sh
-source ./scripts/firewall.sh
-
 # This returns status of the instance. Possible values for status are:
 #
 # - (empty response) -- there is no such instance
@@ -12,7 +8,7 @@ source ./scripts/firewall.sh
 # - STOPPING
 # - TERMINATED
 instance_status() {
-  gcloud compute instances describe $1 | grep "^status:*" | cut -d' ' -f 2
+  gcloud compute instances describe $1 --verbosity=none | grep "^status:*" | cut -d' ' -f 2
 }
 
 start_instance() {
@@ -96,6 +92,7 @@ create_cpu_instance() {
            --boot-disk-device-name $CPU_INSTANCE_NAME
     allow_http
     allow_https
+    cpu_initial_install
   else
     echo "Instance $CPU_INSTANCE_NAME already exists and has status $status"
     exit 1

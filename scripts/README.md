@@ -20,3 +20,4 @@ The main script is `scripts/cloud` and general syntax for calling it is also ver
 * `stop` stop instance
 * `delete` delete instance
 * `ssh` access instance via SSH
+* `reinstall` reinstall all packages: Conda, Theano, and Keras. Not recommended for use.
