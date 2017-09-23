@@ -18,3 +18,4 @@ The main script is `scripts/cloud` and general syntax for calling it is also ver
 * `status` show instance status
 * `start` start instance
 * `stop` stop instance
+* `delete` delete instance
