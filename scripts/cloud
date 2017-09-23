@@ -5,7 +5,10 @@
 # scripts/cloud cpu start
 # ```
 
+source ./scripts/config.sh
+source ./scripts/firewall.sh
 source ./scripts/instance.sh
+source ./scripts/install.sh
 
 instance_type=$1
 command_type=$2
@@ -30,6 +33,9 @@ case $instance_type in
         ;;
       ssh)
         ssh_cpu_instance
+        ;;
+      reinstall)
+        cpu_initial_install
         ;;
       *)
         echo "Unknown command $command_type"
