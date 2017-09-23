@@ -19,3 +19,4 @@ The main script is `scripts/cloud` and general syntax for calling it is also ver
 * `start` start instance
 * `stop` stop instance
 * `delete` delete instance
+* `ssh` access instance via SSH

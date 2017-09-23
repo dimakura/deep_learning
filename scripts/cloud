@@ -28,6 +28,9 @@ case $instance_type in
       delete)
         delete_cpu_instance
         ;;
+      ssh)
+        ssh_cpu_instance
+        ;;
       *)
         echo "Unknown command $command_type"
         exit 1
