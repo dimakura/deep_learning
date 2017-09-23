@@ -25,6 +25,9 @@ case $instance_type in
       stop)
         stop_cpu_instance
         ;;
+      delete)
+        delete_cpu_instance
+        ;;
       *)
         echo "Unknown command $command_type"
         exit 1

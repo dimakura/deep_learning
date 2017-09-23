@@ -36,8 +36,19 @@ stop_instance() {
     gcloud compute instances stop $instance_name
     instance_status $instance_name
   else
-    echo "Instance $instance_name is already stop (status=$status)."
+    echo "Instance $instance_name is already stopped (status=$status)."
     exit 1
+  fi
+}
+
+delete_instance() {
+  local instance_name=$1
+  local status=$(instance_status $instance_name)
+  if [ -z $status ]; then
+    echo "Instance doesn't exists $instance_name"
+  else
+    echo "Deleting instance $instance_name..."
+    gcloud compute instances delete $instance_name --delete-disks all
   fi
 }
 
@@ -85,4 +96,8 @@ start_cpu_instance() {
 
 stop_cpu_instance() {
   stop_instance $CPU_INSTANCE_NAME
+}
+
+delete_cpu_instance() {
+  delete_instance $CPU_INSTANCE_NAME
 }
