@@ -33,10 +33,10 @@ install_helpers() {
 }
 
 initial_install() {
-  local status=$(cpu_instance_status)
+  local status=$(instance_status $1)
 
   if [ -z $status ]; then
-    echo "Instance $1 doesn't exist"  
+    echo "Instance $1 doesn't exist"
     exit 1
   else
     install_conda $1
@@ -48,4 +48,8 @@ initial_install() {
 
 cpu_initial_install() {
   initial_install $CPU_INSTANCE_NAME
+}
+
+gpu_initial_install() {
+  initial_install $GPU_INSTANCE_NAME
 }

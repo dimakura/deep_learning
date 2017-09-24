@@ -78,8 +78,8 @@ create_cpu_instance() {
     gcloud beta compute instances create $CPU_INSTANCE_NAME\
            --machine-type $CPU_MACHINE_TYPE\
            --subnet "default"\
-           --maintenance-policy "MIGRATE"\
-           --scopes $CPU_SERVICE_SCOPES
+           --maintenance-policy $CPU_MAINTENANCE_POLICY\
+           --scopes $CPU_SERVICE_SCOPES\
            --min-cpu-platform "Automatic"\
            --tags $HTTP_SERVER,$HTTPS_SERVER\
            --image $IMAGE\
@@ -87,9 +87,9 @@ create_cpu_instance() {
            --boot-disk-size $CPU_DISK_SIZE\
            --boot-disk-type "pd-standard"\
            --boot-disk-device-name $CPU_INSTANCE_NAME
+    cpu_initial_install
     allow_http
     allow_https
-    cpu_initial_install
   else
     echo "Instance $CPU_INSTANCE_NAME already exists and has status $status"
     exit 1
@@ -116,4 +116,48 @@ ssh_cpu_instance() {
 
 gpu_instance_status() {
   instance_status $GPU_INSTANCE_NAME
+}
+
+create_gpu_instance() {
+  local status=$(gpu_instance_status)
+
+  if [ -z $status ]; then
+    echo "Creating $GPU_INSTANCE_NAME..."
+    gcloud beta compute instances create $GPU_INSTANCE_NAME\
+           --machine-type $GPU_MACHINE_TYPE\
+           --subnet "default"\
+           --maintenance-policy $GPU_MAINTENANCE_POLICY\
+           --scopes $GPU_SERVICE_SCOPES\
+           --accelerator type=$GPU_CARD_TYPE,count=$GPU_CARD_COUNT\
+           --min-cpu-platform "Automatic"\
+           --tags $HTTP_SERVER,$HTTPS_SERVER\
+           --image $IMAGE\
+           --image-project $IMAGE_PROJECT\
+           --boot-disk-size $GPU_DISK_SIZE\
+           --boot-disk-type "pd-standard"\
+           --boot-disk-device-name $GPU_INSTANCE_NAME
+    gpu_initial_install
+    stop_gpu_instance
+    allow_http
+    allow_https
+  else
+    echo "Instance $GPU_INSTANCE_NAME already exists and has status $status"
+    exit 1
+  fi
+}
+
+start_gpu_instance() {
+  start_instance $GPU_INSTANCE_NAME
+}
+
+stop_gpu_instance() {
+  stop_instance $GPU_INSTANCE_NAME
+}
+
+delete_gpu_instance() {
+  delete_instance $GPU_INSTANCE_NAME
+}
+
+ssh_gpu_instance() {
+  ssh_instance $GPU_INSTANCE_NAME
 }
