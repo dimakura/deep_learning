@@ -6,11 +6,10 @@ firewall_rule_exists() {
 
 allow_http() {
   if [ $(firewall_rule_exists $FWR_ALLOW_HTTP) == 0 ]; then
-    gcloud compute --project=$PROJECT\
-           firewall-rules create\
+    gcloud compute firewall-rules create\
            $FWR_ALLOW_HTTP\
            --network=default\
-           --allow=tcp:80\
+           --allow=tcp:80,tcp:8888\
            --source-ranges=0.0.0.0/0\
            --target-tags=$HTTP_SERVER
   else
@@ -20,11 +19,10 @@ allow_http() {
 
 allow_https() {
   if [ $(firewall_rule_exists $FWR_ALLOW_HTTPS) == 0 ]; then
-    gcloud compute --project=$PROJECT\
-           firewall-rules create\
+    gcloud compute firewall-rules create\
            $FWR_ALLOW_HTTPS\
            --network=default\
-           --allow=tcp:443\
+           --allow=tcp:443,tcp:8888\
            --source-ranges=0.0.0.0/0\
            --target-tags=$HTTPS_SERVER
   else
