@@ -16,11 +16,11 @@ command_type=$2
 case $instance_type in
   cpu)
     case $command_type in
-      create)
-        create_cpu_instance
-        ;;
       status)
         cpu_instance_status
+        ;;
+      create)
+        create_cpu_instance
         ;;
       start)
         start_cpu_instance
@@ -36,6 +36,35 @@ case $instance_type in
         ;;
       reinstall)
         cpu_initial_install
+        ;;
+      *)
+        echo "Unknown command $command_type"
+        exit 1
+        ;;
+    esac
+    ;;
+  gpu)
+    case $command_type in
+      status)
+        gpu_instance_status
+        ;;
+      create)
+        create_gpu_instance
+        ;;
+      start)
+        start_gpu_instance
+        ;;
+      stop)
+        stop_gpu_instance
+        ;;
+      delete)
+        delete_gpu_instance
+        ;;
+      ssh)
+        ssh_gpu_instance
+        ;;
+      reinstall)
+        gpu_initial_install
         ;;
       *)
         echo "Unknown command $command_type"
