@@ -33,10 +33,17 @@ install_helpers() {
 }
 
 initial_install() {
-  install_conda $1
-  install_theano $1
-  install_keras $1
-  install_helpers $1
+  local status=$(cpu_instance_status)
+
+  if [ -z $status ]; then
+    echo "Instance $1 doesn't exist"  
+    exit 1
+  else
+    install_conda $1
+    install_theano $1
+    install_keras $1
+    install_helpers $1
+  fi
 }
 
 cpu_initial_install() {
