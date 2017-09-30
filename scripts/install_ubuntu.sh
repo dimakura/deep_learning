@@ -1,13 +1,11 @@
-####################################################################################################
 # Original version from https://github.com/fastai/courses/blob/master/setup/install-gpu.sh
-####################################################################################################
 
 # This script is designed to work with ubuntu 16.04 LTS
 
 # ensure system is updated and has basic build tools
 sudo apt-get update
 sudo apt-get --assume-yes upgrade
-sudo apt-get --assume-yes install tmux build-essential gcc g++ make binutils
+sudo apt-get --assume-yes install tmux build-essential gcc g++ make binutils unzip git
 sudo apt-get --assume-yes install software-properties-common
 
 # download and install GPU drivers
@@ -72,8 +70,7 @@ echo "c.NotebookApp.password = u'"$jupass"'" >> $HOME/.jupyter/jupyter_notebook_
 echo "c.NotebookApp.ip = '*'
 c.NotebookApp.open_browser = False" >> $HOME/.jupyter/jupyter_notebook_config.py
 
-# clone the fast.ai course repo and prompt to start notebook
+# clone the fast.ai course repo
 cd ~
-git clone https://github.com/fastai/courses.git
-echo "\"jupyter notebook\" will start Jupyter on port 8888"
-echo "If you get an error instead, try restarting your session so your $PATH is updated"
+ssh-keygen -t rsa -b 4096 -f .ssh/id_rsa -q -C "dimakura@gmail.com" -P ""
+git clone https://github.com/dimakura/fast.ai.git
