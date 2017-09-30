@@ -74,3 +74,5 @@ c.NotebookApp.open_browser = False" >> $HOME/.jupyter/jupyter_notebook_config.py
 cd ~
 ssh-keygen -t rsa -b 4096 -f .ssh/id_rsa -q -C "dimakura@gmail.com" -P ""
 git clone https://github.com/dimakura/fast.ai.git
+cd fast.ai/
+git fetch --all
