@@ -87,6 +87,7 @@ create_cpu_instance() {
            --boot-disk-size $CPU_DISK_SIZE\
            --boot-disk-type "pd-standard"\
            --boot-disk-device-name $CPU_INSTANCE_NAME
+    sleep 1
     cpu_initial_install
     allow_http
     allow_https
@@ -136,6 +137,7 @@ create_gpu_instance() {
            --boot-disk-size $GPU_DISK_SIZE\
            --boot-disk-type "pd-standard"\
            --boot-disk-device-name $GPU_INSTANCE_NAME
+    sleep 1
     gpu_initial_install
     stop_gpu_instance
     allow_http
