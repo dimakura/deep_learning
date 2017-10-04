@@ -1,0 +1,189 @@
+#!/bin/sh
+
+readonly GPU_CARD_TYPE="nvidia-tesla-k80"
+readonly GPU_MAINTENANCE_POLICY="TERMINATE"
+readonly HTTP_SERVER="http-server"
+readonly HTTPS_SERVER="https-server"
+readonly SCOPES=("https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring.write","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append")
+readonly IMAGE="ubuntu-1604-xenial-v20170919"
+readonly IMAGE_PROJECT="ubuntu-os-cloud"
+readonly DISK_TYPE="pd-standard"
+
+usage() {
+  echo "Usage: google-cloud COMMAND OPTIONS"
+  echo "  COMMAND list, create, delete, ssh, start, stop, intall"
+  exit 1
+}
+
+#
+# First parameter is always a command.
+#
+cmnd=$1
+shift
+
+if [ -z $cmnd ]
+then
+  usage
+fi
+
+#
+# List instances.
+#
+# ```sh
+# google-cloud list
+# ```
+list_instances() {
+  gcloud compute instances list
+}
+
+#
+# Create instance.
+#
+# ```sh
+# google-cloud create my-instance [--cpu,-c 2] [--gpu,-g 0] [--ram,-r 8] [--storage,-s 32]
+# ```
+create_instance() {
+  # name is mandatory
+  local name=$1
+  local cpu=2
+  local gpu=0
+  local ram=8
+  local storage=32
+  shift
+ 
+  if ! [[ $name =~ ^[a-zA-Z0-9\-]+$ ]]
+  then
+    echo Incorrect instance name: $name
+    exit 1
+  fi
+
+  while [ $# -ne 0 ]
+  do
+    local opt=$1
+    case $opt in
+      --cpu|-c)
+        cpu=$2
+        shift
+        shift
+        ;;
+      --gpu|-g)
+        gpu=$2
+        shift
+        shift
+        ;;
+      --ram|-r)
+        ram=$2
+        shift
+        shift
+        ;;
+      --storage|-s)
+        storage=$2
+        shift
+        shift
+        ;;
+      *)
+        echo Unknow option: $opt
+        exit 1
+        ;;
+    esac
+  done
+
+  let ram_size="$ram*1024"
+  local machine_type="custom-$cpu-$ram_size"
+  cmd_options="--machine-type $machine_type"
+  cmd_options="$cmd_options --scopes $SCOPES"
+  cmd_options="$cmd_options --tags $HTTP_SERVER,$HTTPS_SERVER"
+  cmd_options="$cmd_options --image $IMAGE"
+  cmd_options="$cmd_options --image-project $IMAGE_PROJECT"
+  cmd_options="$cmd_options --boot-disk-size $storage"
+  cmd_options="$cmd_options --boot-disk-type $DISK_TYPE"
+  cmd_options="$cmd_options --boot-disk-device-name $name"
+  if [ $gpu -gt 0 ]
+  then
+    cmd_options="$cmd_options --accelerator type=$GPU_CARD_TYPE,count=$gpu"
+    cmd_options="$cmd_options --maintenance-policy $GPU_MAINTENANCE_POLICY"
+  fi
+
+  gcloud beta compute instances create $name $cmd_options
+}
+
+#
+# Delete instance.
+#
+# ```sh
+# google-cloud delete my-instance
+# ```
+delete_instance() {
+  gcloud compute instances delete $1 --delete-disks all
+}
+
+#
+# Start instance.
+#
+# ```sh
+# google-cloud start my-instance
+# ```
+start_instance() {
+  gcloud compute instances start $1
+}
+
+#
+# Stop instance.
+#
+# ```sh
+# google-cloud stop my-instance
+# ```
+stop_instance() {
+  gcloud compute instances stop $1
+}
+
+#
+# SSH into the instance.
+#
+# ```sh
+# google-cloud ssh my-instance
+# ```
+ssh_instance() {
+  gcloud compute ssh $1
+}
+
+#
+# Install instance software.
+#
+# ```sh
+# google-cloud install my-instance [--gpu, -g]
+# ```
+install_instance() {
+  gpu=0
+  if [ "$2" = "--gpu" ] || [ "$2" = "-g" ]
+  then
+    gpu=1
+  fi
+  
+  dir=$(dirname "$(realpath "$0")")
+  gcloud compute scp $dir/install_ubuntu.sh $1:~/initial_install.sh
+  gcloud compute ssh $1 --command "chmod +x ~/initial_install.sh; ~/initial_install.sh $gpu"
+}
+
+#
+# Main dispatch block.
+#
+case $cmnd in
+  list)
+    list_instances ;;
+  create)
+    create_instance $@ ;;
+  delete)
+    delete_instance $@ ;;
+  stop)
+    stop_instance $@ ;;
+  start)
+    start_instance $@ ;;
+  ssh)
+    ssh_instance $@ ;;
+  install)
+    install_instance $@ ;;
+  *)
+    echo Unknow command: $cmnd
+    usage ;;
+esac
