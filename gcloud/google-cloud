@@ -176,7 +176,6 @@ install_instance() {
 
   gcloud compute scp $dir/install_ubuntu.sh $1:~/initial_install.sh
   gcloud compute ssh $1 --command "chmod +x ~/initial_install.sh; ~/initial_install.sh $inst $gpu $user $repo $gkey"
-  #echo "$inst $gpu $user $repo $gkey"
 }
 
 #
