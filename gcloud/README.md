@@ -93,14 +93,19 @@ To make `google-cloud` more convenient to use, update your `$PATH` variable to i
 export PATH="$PATH:/path/to/this/directory"
 ```
 
-### Provide GitHub access token
+### Configure GitHub
 
 If you plan to connect GitHub repository and be able to push/pull your work, you need to provide
-this information in the following two files:
+additional information in `gcloud/github`.
 
-- `gcloud/access_token` with valid [GitHub personal access token](https://github.com/settings/tokens);
-- `gcloud/repo` with name of your github repo (e.g. `dimakura/deep_learning`).
+Example structure for this file is following:
 
-GitHub access token will be used to push public SSH key to your GitHub accout.
-If you also provide GitHub repository name, it will be checked out under `~/work` directory in the
-newly installed instance.
+```sh
+dimakura
+deep_learning
+mygithubtoken1234567890
+```
+
+- First line contains your username;
+- Second line contains name of your repository;
+- THe last line is a [Personal access token](https://github.com/settings/tokens).

@@ -154,15 +154,29 @@ ssh_instance() {
 # google-cloud install my-instance [--gpu, -g]
 # ```
 install_instance() {
+  dir=$(dirname "$(realpath "$0")")
+  inst=$1
   gpu=0
   if [ "$2" = "--gpu" ] || [ "$2" = "-g" ]
   then
     gpu=1
   fi
-  
-  dir=$(dirname "$(realpath "$0")")
+
+  user=""
+  repo=""
+  gkey=""
+
+  file=$dir/github
+  if [ -f $file ] && [ $(cat $file | wc -l) -gt 2 ]
+  then
+    user=$(head -1 $file | tail -1)
+    repo=$(head -2 $file | tail -1)
+    gkey=$(head -3 $file | tail -1)
+  fi
+
   gcloud compute scp $dir/install_ubuntu.sh $1:~/initial_install.sh
-  gcloud compute ssh $1 --command "chmod +x ~/initial_install.sh; ~/initial_install.sh $gpu"
+  gcloud compute ssh $1 --command "chmod +x ~/initial_install.sh; ~/initial_install.sh $inst $gpu $user $repo $gkey"
+  #echo "$inst $gpu $user $repo $gkey"
 }
 
 #
