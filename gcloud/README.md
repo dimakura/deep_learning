@@ -1,22 +1,16 @@
 # Using Google Cloud
 
-`google-cloud` script is useful for creating and managing compute instances for deep learning.
+`google-cloud` script is useful for creating and managing Google Cloud compute instances
+for deep learning.
 
-## Setup
+It helps:
 
-Place this directory under your `$PATH`, so you can call `google-cloud` directly:
+- Create and manage compute instances in Google Cloud;
+- Install Python, PyTorch, and Jupyter Notebook;
+- Install CUDA SDK for GPU-enabled instances;
+- Connect instance to your GitHub account, so you can easily import and export your work.
 
-```sh
-google-cloud list
-```
-
-In order to connect GitHub to your server you also need to provide
-[Github personal token](https://github.com/settings/tokens) in `gcloud/.access_token`.
-
-*Note*: If you provide personal GitHub token, This script posts a new SSH public key
-of the instance to your GitHub account, but it will not be erase this key after this instance
-is deleted. You should do it yourself from [GitHub keys page](https://github.com/settings/keys).
-
+In short it enabled you to kick-off your instance in few minutes skipping repetitve steps.
 
 ## Usage
 
@@ -87,3 +81,26 @@ google-cloud delete instance-name
 ```
 
 Note that deleting instance will delete all the data and it cannot be restored.
+
+## Setup
+
+### Update your $PATH
+
+To make `google-cloud` more convenient to use, update your `$PATH` variable to include this directory.
+
+```sh
+# In .bashrc
+export PATH="$PATH:/path/to/this/directory"
+```
+
+### Provide GitHub access token
+
+If you plan to connect GitHub repository and be able to push/pull your work, you need to provide
+this information in the following two files:
+
+- `gcloud/.access_token` with valid [GitHub personal access token](https://github.com/settings/tokens);
+- `gcloud/.repo` with name of your github repo (e.g. `dimakura/deep_learning`).
+
+GitHub access token will be used to push public SSH key to your GitHub accout.
+If you also provide GitHub repository name, it will be checked out under `~/work` directory in the
+newly installed instance.
