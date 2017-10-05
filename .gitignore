@@ -1,6 +1,6 @@
 .DS_Store
 *.swp
 
-gcloud/.access_token
-gcloud/.repo
+gcloud/access_token
+gcloud/repo
 data/

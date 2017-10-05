@@ -16,7 +16,7 @@ In short it enabled you to kick-off your instance in few minutes skipping repeti
 
 Below are few example of using `google-cloud` script.
 
-To create instance use `create` operation:
+To create instance use `create` command:
 
 ```sh
 google-cloud create instance-name --cpu 4 --ram 16 --gpu 1 --storage 100
@@ -53,8 +53,8 @@ This script will install:
 - Python 3.6 (via Anaconda);
 - Pytorch framework;
 - Jupyter Notebook;
-- Connect to your GitHub account (if `.access_token` is provided);
-- Clone Github repo (if `.repo` is provided).
+- Connect to your GitHub account (if `gcloud/access_token` is provided);
+- Clone Github repo (if `gcloud/repo` is provided).
 
 After installing software you can access instance using `ssh` command:
 
@@ -98,8 +98,8 @@ export PATH="$PATH:/path/to/this/directory"
 If you plan to connect GitHub repository and be able to push/pull your work, you need to provide
 this information in the following two files:
 
-- `gcloud/.access_token` with valid [GitHub personal access token](https://github.com/settings/tokens);
-- `gcloud/.repo` with name of your github repo (e.g. `dimakura/deep_learning`).
+- `gcloud/access_token` with valid [GitHub personal access token](https://github.com/settings/tokens);
+- `gcloud/repo` with name of your github repo (e.g. `dimakura/deep_learning`).
 
 GitHub access token will be used to push public SSH key to your GitHub accout.
 If you also provide GitHub repository name, it will be checked out under `~/work` directory in the
