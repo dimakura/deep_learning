@@ -62,7 +62,7 @@ then
   title="gcloud-$inst-key"
   key=$(cat ~/.ssh/id_rsa.pub)
   curl -u $user:$gkey -X POST -d "{\"title\":\"$title\",\"key\":\"$key\"}" https://api.github.com/user/keys
-  sleep 2 # give github time to process information
+  sleep 5 # give github time to process information
   git clone git@github.com:$user/$repo.git
   cd $repo
   git fetch --all
