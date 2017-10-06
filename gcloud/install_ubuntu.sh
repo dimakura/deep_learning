@@ -1,14 +1,18 @@
 # This script is designed to work with ubuntu 16.04 LTS
 
+# Installation settings.
+inst=$1 # instance name
+gpu=$2  # is GPU present?
+user=$3 # github username
+repo=$4 # github repository name
+gkey=$5 # github personal access key
+
 # Upgrade system and install basic tools
 sudo apt-get update
 sudo apt-get -y upgrade
 sudo apt-get -y install tmux unzip git
 sudo apt-get -y install build-essential gcc g++ make binutils
 sudo apt-get -y install software-properties-common
-
-# Is GPU present?
-gpu=$1
 
 # Use /tmp for installation
 cd /tmp
@@ -47,5 +51,19 @@ echo "c.NotebookApp.password = u'"$jupass"'" >> $HOME/.jupyter/jupyter_notebook_
 echo "c.NotebookApp.ip = '*'
 c.NotebookApp.open_browser = False" >> $HOME/.jupyter/jupyter_notebook_config.py
 
-# Prepare working directories
+# Create working directory
 mkdir ~/work
+cd ~/work
+
+# Connect to GitHib
+if ! [ -z $user ]
+then
+  ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsa -q -N ""
+  title="gcloud-$inst-key"
+  key=$(cat ~/.ssh/id_rsa.pub)
+  curl -u $user:$gkey -X POST -d "{\"title\":\"$title\",\"key\":\"$key\"}" https://api.github.com/user/keys
+  sleep 5 # give github time to process information
+  git clone git@github.com:$user/$repo.git
+  cd $repo
+  git fetch --all
+fi
